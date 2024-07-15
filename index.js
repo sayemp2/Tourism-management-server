@@ -1,21 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb');
+require('dotenv').config();
+
 const app = express();
 const port = process.env.PORT || 1000;
-
 
 app.use(cors());
 app.use(express.json());
 
-
-
-
-
-
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.acyxhfp.mongodb.net/?appName=Cluster0`;
-
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.acyxhfp.mongodb.net`;
 
 const client = new MongoClient(uri, {
     serverApi: {
@@ -27,30 +21,30 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-
         await client.connect();
+
         const TourismDB = client.db("TourismDB");
-        const TourismList = TourismDB.collection("TourismList");
+        const userList = TourismDB.collection("userList");
 
         app.post('/users', async (req, res) => {
-            const users = req.body;
-            const result = await TourismList.insertOne(users);
-            res.send(result);
-        })
-
+            const user = req.body;
+            console.log(user);
+            const result = await userList.insertOne(user)
+            res.send(result)
+        });
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error("Failed to connect to MongoDB", error);
     }
 }
-run().catch(console.dir);
 
+run().catch(console.error);
 
 
 app.get('/', (req, res) => {
-    res.send('Tourism Management Connect Server')
+    res.send('Connect with Management server')
 })
 app.listen(port, () => {
-    console.log(`Tourism Management Server Connect successfully ${port}`);
+    console.log(`connect with management server ${port}`);
 })
