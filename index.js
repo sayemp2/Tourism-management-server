@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
 
 const app = express();
 const port = process.env.PORT || 1000;
@@ -21,10 +22,18 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
+      
 
         const TourismDB = client.db("TourismDB");
         const userList = TourismDB.collection("userList");
+        const ContriesList = TourismDB.collection("ContriesList");
+        // const TourismList = TourismDB.collection("TourismList");
+
+
+        app.get("/countries", async (req, res) => {
+            const countries = await ContriesList.find().toArray();
+            res.send(countries);
+        })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -32,8 +41,8 @@ async function run() {
             const result = await userList.insertOne(user)
             res.send(result)
         });
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+        
     } catch (error) {
         console.error("Failed to connect to MongoDB", error);
     }
