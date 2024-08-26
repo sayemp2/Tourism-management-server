@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 1000;
@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-  
+
         const TourismDB = client.db("TourismDB");
         const userList = TourismDB.collection("userList");
         const ContriesList = TourismDB.collection("ContriesList");
@@ -39,12 +39,17 @@ async function run() {
             res.send(tourismSpots);
         });
 
-        app.get("/myList/:email", async(req,res)=>{
-            const result = await TourismList.find({email:req.params.email}).toArray();
+        app.get("/myList/:email", async (req, res) => {
+            const result = await TourismList.find({ email: req.params.email }).toArray();
             res.send(result);
         })
 
-        
+        app.get('/spotList/:id', async (req, res) => {
+            const id = req.params.id;
+            const spot = { _id: new ObjectId(id) };
+            const result = await TourismList.findOne(spot);
+            res.send(result);
+        })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
