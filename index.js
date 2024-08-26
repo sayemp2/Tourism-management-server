@@ -44,7 +44,7 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/spotList/:id', async (req, res) => {
+        app.get('/spotlist/:id', async (req, res) => {
             const id = req.params.id;
             const spot = { _id: new ObjectId(id) };
             const result = await TourismList.findOne(spot);
