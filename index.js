@@ -64,6 +64,13 @@ async function run() {
             res.send(result);
         });
 
+        app.delete('/spotlist/:id', async (req, res) => {
+            const id = req.params.id;
+            const spot = {_id: new ObjectId(id)};
+            const result = await TourismList.deleteOne(spot)
+        })
+
+
         console.log("Connected to MongoDB successfully!");
     } catch (error) {
         console.error("Failed to connect to MongoDB", error);
