@@ -23,8 +23,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
-
+  
         const TourismDB = client.db("TourismDB");
         const userList = TourismDB.collection("userList");
         const ContriesList = TourismDB.collection("ContriesList");
@@ -39,6 +38,11 @@ async function run() {
             const tourismSpots = await TourismList.find().toArray();
             res.send(tourismSpots);
         });
+
+        app.get("/myList/:email", async(req,res)=>{
+            const result = await TourismList.find({email:req.params.email}).toArray();
+            res.send(result);
+        })
 
         
 
