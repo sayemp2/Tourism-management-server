@@ -51,6 +51,29 @@ async function run() {
             res.send(result);
         })
 
+
+        app.put('/spotlist/:id', async (req, res) => {
+            const id = req.params.id;
+            const spot = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateSpotDetails = {
+                $set: {
+                    image: spot.image,
+                    spot_Name: spot.spot_Name,
+                    country_Name: spot.country_Name,
+                    location: spot.location,
+                    description: spot.description,
+                    cost: spot.cost,
+                    season: spot.season,
+                    time: spot.time,
+                    visitors: spot.visitors,
+                }
+            }
+            const result = await TourismList.updateOne(filter, updateSpotDetails, options);
+            res.send(result);
+        })
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await userList.insertOne(user);
@@ -66,8 +89,9 @@ async function run() {
 
         app.delete('/spotlist/:id', async (req, res) => {
             const id = req.params.id;
-            const spot = {_id: new ObjectId(id)};
+            const spot = { _id: new ObjectId(id) };
             const result = await TourismList.deleteOne(spot)
+            res.send(result);
         })
 
 
